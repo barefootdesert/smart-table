@@ -83,7 +83,18 @@
 <template id="table">
     <form name="table" class="table" style="--columns: 1fr 1fr 1fr 1fr" role="table" aria-label="Data table">
 
-        <div data-name="header"></div>
+        <div data-name="header">
+            <input type="text" placeholder="Поиск..." data-element="search">
+
+            <button type="submit" name="sort" data-element="sortByDate" data-field="date" data-value="none">
+                Date
+            </button>
+
+            <button type="submit" name="sort" data-element="sortByTotal" data-field="total" data-value="none">
+                Sum
+            </button>
+        </div>
+
         <div data-name="filter"></div>
         <div class="table-content" data-name="rows" role="rowgroup">
         </div>

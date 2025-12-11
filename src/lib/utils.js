@@ -10,25 +10,22 @@
  * в удобный объект для дальнейшего доступа к этим элементам.
  */
 export function cloneTemplate(templateId) {
-    // Находим шаблон в документе по его ID
     const template = document.getElementById(templateId);
-
-    // Клонируем первый дочерний элемент шаблона вместе со всеми его потомками
     const clone = template.content.firstElementChild.cloneNode(true);
 
-    // Находим все элементы с атрибутом data-name и создаем объект,
-    // где ключами являются значения data-name, а значениями - сами элементы
-    const elements = Array.from(clone.querySelectorAll('[data-name]')).reduce((acc, el) => {
-        acc[el.dataset.name] = el;
-        return acc;
-    }, {});
+    const elements = {};
 
-    // Возвращаем объект с контейнером (клоном шаблона) и именованными элементами
-    return {
-        container: clone,
-        elements: elements
-    };
+    clone.querySelectorAll('[data-name]').forEach(el => {
+        elements[el.dataset.name] = el;
+    });
+
+    clone.querySelectorAll('[data-element]').forEach(el => {
+        elements[el.dataset.element] = el;
+    });
+
+    return { container: clone, elements };
 }
+
 
 /**
  * Преобразует объект FormData в обычный JavaScript-объект (только одиночные значения)

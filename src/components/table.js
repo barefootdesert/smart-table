@@ -1,73 +1,101 @@
-import {cloneTemplate} from "../lib/utils.js";
+import { cloneTemplate } from "../lib/utils.js";
 
 /**
  * Инициализирует таблицу и вызывает коллбэк при любых изменениях и нажатиях на кнопки
  *
  * @param {Object} settings
  * @param {(action: HTMLButtonElement | undefined) => void} onAction
- * @returns {{container: Node, elements: *, render: render}}
+ * @returns {{container: Node, elements: *, render: render, renderPagination: renderPagination}}
  */
 export function initTable(settings, onAction) {
-    const {tableTemplate, rowTemplate, before, after} = settings;
+    const {
+        tableTemplate,
+        rowTemplate,
+        before = [],
+        after = [],
+        pagination: paginationTemplate = null
+    } = settings;
+
     const root = cloneTemplate(tableTemplate);
 
-    // @todo: #1.2 —  вывести дополнительные шаблоны до и после таблицы
-    function renderBlocks(array, template, target) {
-      array.forEach(item => {
-          const block = cloneTemplate(template);
+    root.rows = root.elements?.rows || null;
+    root.beforeContainer = root.elements?.before || null;
+    root.afterContainer = root.elements?.after || null;
+    root.pagination = root.elements?.pagination || null;
+    root.filter = root.elements?.filter || null;
 
-          Object.keys(item).forEach(key => {
-              if (block.elements[key]) {
-                block.elements[key].textContent = item[key];
-              }
-          });
-
-          target.append(block.container);
-      });
+    if (root.elements?.header) {
+      root.header = {
+        container: root.elements.header,
+        search: root.elements.search || null,
+        sortByDate: root.elements.sortByDate || null,
+        sortByTotal: root.elements.sortByTotal || null
+     };
+    } else {
+      root.header = null;
     }
 
-    // @todo: #1.3 —  обработать события и вызвать onAction()
 
-    // 1. Событие change
-    root.container.addEventListener("change", () => {
-      // просто вызываем onAction без аргументов
-      onAction();
-    });
-
-    // 2. Событие reset
-    root.container.addEventListener("reset", () => {
-      // reset срабатывает ДО очистки полей → нужна задержка
-      setTimeout(() => onAction(), 0);
-    });
-
-    // 3. Событие submit
-    root.container.addEventListener("submit", (e) => {
-      e.preventDefault();                // предотвращаем перезагрузку страницы
-      onAction(e.submitter);             // передаём кнопку, которая инициировала submit
-    });
-
-
-    const render = (data) => {
-    // @todo: #1.1 — преобразовать данные в массив строк на основе шаблона rowTemplate
-    const nextRows = data.map(item => {
-        // Клонируем шаблон строки
-        const row = cloneTemplate(rowTemplate);
-
-        // Обходим ключи объекта item
-        Object.keys(item).forEach(key => {
-            // Если такой элемент существует в шаблоне
-            if (row.elements[key]) {
-                row.elements[key].textContent = item[key];
-            }
+    function renderBlocks(array, template, target) {
+        if (!template || !target) return;
+        array.forEach(item => {
+            const block = cloneTemplate(template);
+            Object.keys(item).forEach(key => {
+                if (block.elements[key]) {
+                    block.elements[key].textContent = item[key];
+                }
+            });
+            target.append(block.container);
         });
+    }
 
-        // Возвращаем контейнер строки (DOM-элемент)
-        return row.container;
+    renderBlocks(before, rowTemplate, root.beforeContainer);
+    renderBlocks(after, rowTemplate, root.afterContainer);
+
+    // ===== Обработчики событий =====
+    root.container.addEventListener("change", () => onAction());
+    root.container.addEventListener("reset", () => setTimeout(() => onAction(), 0));
+    root.container.addEventListener("submit", (e) => {
+        e.preventDefault();
+        onAction(e.submitter);
     });
 
-    root.elements.rows.replaceChildren(...nextRows);
-}
+    /**
+     * Рендер строк таблицы
+     */
+    const render = (data) => {
+        if (!root.rows) return;
+        const nextRows = data.map(item => {
+            const row = cloneTemplate(rowTemplate);
+            Object.keys(item).forEach(key => {
+                if (row.elements[key]) row.elements[key].textContent = item[key];
+            });
+            return row.container;
+        });
+        root.rows.replaceChildren(...nextRows);
+    };
 
+    const renderPagination = (paginationData) => {
+        if (!paginationTemplate || !root.pagination) return;
+        root.pagination.replaceChildren();
+        paginationData.forEach(item => {
+            const page = cloneTemplate(paginationTemplate);
+            Object.keys(item).forEach(key => {
+                if (page.elements[key]) page.elements[key].textContent = item[key];
+            });
+            root.pagination.append(page.container);
+        });
+    };
 
-    return {...root, render};
+    return {
+        ...root,
+        render,
+        renderPagination,
+        rows: root.rows,
+        beforeContainer: root.beforeContainer,
+        afterContainer: root.afterContainer,
+        pagination: root.pagination,
+        filter: root.filter,
+        header: root.header
+    };
 }
