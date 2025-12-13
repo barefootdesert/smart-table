@@ -2,115 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+    <link rel="icon" type="image/svg+xml" href="public/vite.svg"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Data Table App</title>
 </head>
 <body>
 <main id="app" class="container">
-
-    <!-- Search panel will be inserted above the table -->
 </main>
 
-<!-- Search bar template -->
-<template id="search">
-    <div class="search-bar" data-name="search">
-        <label class="search-wrapper" data-name="searchField">
-            <i class="icon search-icon" aria-hidden="true"></i>
-            <input type="text" name="search" class="input" placeholder="Search" data-name="search">
-        </label>
-        <button type="reset" class="button reset-wrapper" data-name="reset">
-            Reset all filters
-            <i class="icon reset-icon" aria-hidden="true"></i>
-        </button>
-    </div>
-</template>
-
-<template id="header">
-    <div class="table-row header-row" role="rowgroup" data-name="header">
-        <div class="table-column" role="columnheader">
-            <div class="sortable">
-                Date
-                <button type="submit" name="sort" data-field="date" data-value="none" class="icon"
-                        data-name="sortByDate" aria-label="Sort by date"></button>
-            </div>
-        </div>
-        <div class="table-column" role="columnheader">Customer</div>
-        <div class="table-column" role="columnheader">Seller</div>
-        <div class="table-column" role="columnheader">
-            <div class="sortable">
-                Total
-                <button type="submit" name="sort" data-field="total" data-value="none" class="icon"
-                        data-name="sortByTotal" aria-label="Sort by total"></button>
-            </div>
-        </div>
-    </div>
-</template>
-
-<template id="filter">
-    <div class="table-row filter-row" data-name="filter" role="rowgroup">
-        <div class="table-column">
-            <label class="filter-wrapper">
-                <input type="text" class="input" placeholder="Search" name="date" data-name="searchByDate">
-                <button type="submit" name="clear" data-field="date" class="icon"
-                        aria-label="Clear date filter"></button>
-            </label>
-        </div>
-        <div class="table-column">
-            <label class="filter-wrapper">
-                <input type="text" class="input" name="customer" placeholder="Search" data-name="searchByCustomer">
-                <button type="submit" name="clear" data-field="customer" class="icon"
-                        aria-label="Clear customer filter"></button>
-            </label>
-        </div>
-        <div class="table-column">
-            <label class="dropdown-select">
-                <select name="seller" data-name="searchBySeller" aria-label="Filter by seller">
-                    <option value="" selected>—</option>
-                </select>
-            </label>
-        </div>
-        <div class="table-column">
-            <div class="range-inputs">
-                <input type="text" class="input" placeholder="from" name="totalFrom" data-name="totalFrom">
-                <input type="text" class="input" placeholder="to" name="totalTo" data-name="totalTo">
-            </div>
-        </div>
-    </div>
-</template>
-
-<!-- Table template -->
 <template id="table">
-    <form name="table" class="table" style="--columns: 1fr 1fr 1fr 1fr" role="table" aria-label="Data table">
-
-        <div data-name="header">
-            <input type="text" placeholder="Поиск..." data-element="search">
-
-            <button type="submit" name="sort" data-element="sortByDate" data-field="date" data-value="none">
-                Date
-            </button>
-
-            <button type="submit" name="sort" data-element="sortByTotal" data-field="total" data-value="none">
-                Sum
+    <form name="table" class="table" style="--columns: 1fr 1fr 1.5fr 1.5fr 1fr 100px" role="table" aria-label="Data table">
+        
+        <div class="search-bar" data-name="search">
+            <label class="search-wrapper" data-name="searchField">
+                <img src="src/assets/search.svg" alt="Search icon" class="icon search-icon" aria-hidden="true">
+                <input type="text" name="search" class="input" placeholder="Поиск" data-name="search">
+            </label>
+            <button type="reset" class="button reset-wrapper" data-name="reset">
+                Сбросить фильтры
+                <img src="src/assets/clear.svg" alt="Reset icon" class="icon reset-icon" aria-hidden="true">
             </button>
         </div>
 
-        <div data-name="filter"></div>
+        <div class="table-row header-row" role="rowgroup" data-name="header">
+            <div class="table-column" role="columnheader">ID заказа</div> 
+
+            <div class="table-column" role="columnheader">
+                <div class="sortable">
+                    Дата
+                    <button type="submit" name="sort" data-field="date" data-value="down" class="sort-icon"
+                            data-name="sortByDate" aria-label="Сортировать по дате">
+                        <img src="src/assets/sort.svg" alt="Sort icon" aria-hidden="true">
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-column" role="columnheader">
+                <div class="sortable">
+                    Покупатель
+                    <button type="submit" name="sort" data-field="customer" data-value="none" class="sort-icon"
+                            data-name="sortByCustomer" aria-label="Сортировать по покупателю">
+                        <img src="src/assets/sort.svg" alt="Sort icon" aria-hidden="true">
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-column" role="columnheader">
+                <div class="sortable">
+                    Продавец
+                    <button type="submit" name="sort" data-field="seller" data-value="none" class="sort-icon"
+                            data-name="sortBySeller" aria-label="Сортировать по продавцу">
+                        <img src="src/assets/sort.svg" alt="Sort icon" aria-hidden="true">
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-column" role="columnheader">
+                <div class="sortable">
+                    Сумма
+                    <button type="submit" name="sort" data-field="total" data-value="none" class="sort-icon"
+                            data-name="sortByTotal" aria-label="Сортировать по сумме">
+                        <img src="src/assets/sort.svg" alt="Sort icon" aria-hidden="true">
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-column" role="columnheader">Действия</div> 
+        </div>
+
+        <div class="table-row filter-row" data-name="filter" role="rowgroup">
+            <div class="table-column"></div> <div class="table-column">
+                <label class="filter-wrapper has-dropdown">
+                    <input type="text" class="input" value="" name="date" placeholder="2024" data-name="searchByDate">
+                    <button type="submit" name="clear" data-field="date" class="icon filter-icon"
+                            aria-label="Сбросить фильтр даты">
+                        <img src="src/assets/down.svg" alt="Filter icon" aria-hidden="true">
+                    </button>
+                </label>
+            </div>
+            <div class="table-column">
+                <label class="filter-wrapper">
+                    <input type="text" class="input" name="customer" placeholder="Поиск" data-name="searchByCustomer">
+                    <button type="submit" name="clear" data-field="customer" class="icon filter-icon"
+                            aria-label="Сбросить фильтр покупателя">
+                        <img src="src/assets/filter.svg" alt="Filter icon" aria-hidden="true">
+                    </button>
+                </label>
+            </div>
+            <div class="table-column">
+                <label class="dropdown-select filter-wrapper">
+                    <select name="seller" data-name="searchBySeller" aria-label="Фильтр по продавцу">
+                        <option value="" selected>—</option>
+                    </select>
+                </label>
+            </div>
+            <div class="table-column">
+                <div class="range-inputs">
+                    <input type="text" class="input" placeholder="от" name="totalFrom" data-name="totalFrom">
+                    <input type="text" class="input" placeholder="до" name="totalTo" data-name="totalTo">
+                    <button type="submit" name="filterTotal" style="display: none;"></button> 
+                </div>
+            </div>
+            <div class="table-column"></div> </div>
+
         <div class="table-content" data-name="rows" role="rowgroup">
-        </div>
-        <div data-name="pagination"></div>
+            </div>
+        
+        <div data-name="pagination"></div> 
     </form>
 </template>
 
-<!-- Pagination template -->
 <template id="pagination">
     <div class="pagination-container" data-name="pagination">
         <div class="pagination-controls">
             <button type="submit" name="first" class="pagination-button" data-name="firstPage">
-                <i class="icon chevrons-left"></i>
+                <img src="src/assets/chevrons-left.svg" alt="First page" class="icon" aria-hidden="true">
             </button>
             <button type="submit" name="prev" class="pagination-button" data-name="previousPage">
-                <i class="icon left"></i>
+                <img src="src/assets/left.svg" alt="Previous page" class="icon" aria-hidden="true">
             </button>
             <div class="pagination-pages" data-name="pages">
                 <label class="pagination-button">
@@ -119,17 +128,17 @@
                 </label>
             </div>
             <button type="submit" name="next" class="pagination-button" data-name="nextPage">
-                <i class="icon right"></i>
+                <img src="src/assets/right.svg" alt="Next page" class="icon" aria-hidden="true">
             </button>
             <button type="submit" name="last" class="pagination-button" data-name="lastPage">
-                <i class="icon chevrons-right"></i>
+                <img src="src/assets/chevrons-right.svg" alt="Last page" class="icon" aria-hidden="true">
             </button>
         </div>
 
         <div class="pagination-settings">
-            Showing <span data-name="fromRow">1</span>
-            to <span data-name="toRow">10</span>
-            of <span data-name="totalRows">200</span>
+            Показано <span data-name="fromRow">1</span>
+            – <span data-name="toRow">10</span>
+            из <span data-name="totalRows">200</span>
 
             <label class="dropdown-select rows-per-page">
                 <select name="rowsPerPage" data-name="rowsPerPage">
@@ -140,16 +149,20 @@
                 </select>
             </label>
         </div>
-    </div>
+        <input type="hidden" name="limit" value="10"> </div>
 </template>
 
-<!-- Row template -->
 <template id="row">
-    <div class="table-row" role="row">
+    <div class="table-row" role="row" data-record-id=""> 
+        <div class="table-column" data-name="id"></div>
         <div class="table-column" data-name="date"></div>
         <div class="table-column" data-name="customer"></div>
         <div class="table-column" data-name="seller"></div>
         <div class="table-column" data-name="total"></div>
+        
+        <div class="table-column actions"> 
+            <button type="button" data-name="delete">Удалить</button>
+        </div>
     </div>
 </template>
 
